@@ -1,8 +1,0 @@
-def limpiar_campos(monto_var, banco_var, ubicacion_var, banco_destino_var, operacion_var, resultado_text, ubicacion_label, ubicacion_combo, banco_destino_label, banco_destino_combo):
-    monto_var.set("")
-    banco_var.set("")
-    ubicacion_var.set("")
-    banco_destino_var.set("")
-    operacion_var.set("depositar")
-    resultado_text.delete(1.0, tk.END)
-    cambiar_operacion(operacion_var, ubicacion_label, ubicacion_combo, banco_var, ubicacion_var, banco_destino_label, banco_destino_combo, banco_destino_var)
