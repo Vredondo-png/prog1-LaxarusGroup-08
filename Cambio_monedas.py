@@ -167,11 +167,11 @@ button_frame.pack(pady=10)
 button_ejecutar = ttk.Button(button_frame, text="Ejecutar", command=intercambiar)
 button_ejecutar.grid(row=0, column=0)
 
-button_cancelar = ttk.Button(button_frame, text="Cancelar")
-button_cancelar.grid(row=0, column=1)
-
 button_clear = ttk.Button(button_frame, text="Limpiar", command = lambda : resultado_text.delete(1.0, tk.END))
-button_clear.grid(row=0, column=2)
+button_clear.grid(row=0, column=1)
+
+button_cerrar = ttk.Button(button_frame, text="Cerrar", command = lambda : root.destroy())
+button_cerrar.grid(row=0, column=2)
 
 # Frame para resultado
 frame_resultado = tk.LabelFrame(root, text="Resumen de la operación")
