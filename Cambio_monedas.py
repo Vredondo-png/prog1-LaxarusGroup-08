@@ -2,6 +2,24 @@ from tkinter import *
 from tkinter import ttk
 import tkinter as tk
 
+# Funcion para comprobar input
+def corregir_input():
+    allowed_symbols='0123456789.'
+    current_str_value = entry_amount1.get()
+    if current_str_value == '':
+        var_amount2.set(value=0.0)
+        return False
+    if current_str_value[0] == '.':
+        return False
+    for char in current_str_value:
+        if char not in allowed_symbols:
+            current_str_value = current_str_value.replace(char, '')
+    if '.' not in current_str_value:
+        current_str_value = current_str_value + ".0"
+    if current_str_value.count(".") == 2:
+        var_amount1.set(value=current_str_value[:current_str_value.index('.')+1]) 
+    new_float_value = float(current_str_value)
+    var_amount1.set(value=new_float_value)
 
 # Funcion para obtener tasa
 def get_currency(moneda):
@@ -36,6 +54,7 @@ def recalcular_intercambio():
 
 # Funcion en caso de que entry cambiado
 def on_entry_change(var, index, mode): 
+    corregir_input()
     if  var_amount1.get() > get_displayed_saldo():
         info_window = tk.Toplevel(root)
         info_window.title("Information")
@@ -44,8 +63,6 @@ def on_entry_change(var, index, mode):
         close_button = ttk.Button(info_window, text="Close", command=info_window.destroy)
         close_button.pack(pady=10)
         var_amount1.set(value=get_displayed_saldo())
-    if var_amount1.get() == '':
-        var_amount1.set(value=0.0)
     recalcular_intercambio()
 
 # Funcion para recalcular intercambio
