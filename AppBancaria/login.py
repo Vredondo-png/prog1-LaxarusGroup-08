@@ -18,7 +18,7 @@ def load_json(path, default):
         return json.load(f)
 
 
-# Carga o crea archivos si no existen (valores por defecto)
+# Archivos por defecto
 default_cuentas = [
     {"usuario": "alice", "password": "alice123", "legajo": "100", "saldo": 10000},
     {"usuario": "bob",   "password": "bob123",   "legajo": "200", "saldo": 5000},
@@ -27,16 +27,15 @@ default_cuentas = [
     {"usuario": "eva",   "password": "eva123",   "legajo": "100", "saldo": 1500}
 ]
 default_movs = {acct["usuario"]: [
-    {"tipo": "deposito", "monto": acct["saldo"], "fecha": "2025-01-01 00:00:00", "nota": "Depósito inicial"}
+    {"tipo": "deposito", "monto": acct["saldo"], "fecha": "2025-01-08 00:00:00", "nota": "Depósito inicial"}
 ] for acct in default_cuentas}
 
 cuentas = load_json(CUENTAS_FILE, default_cuentas)
-# aseguramos que movimientos tenga claves para todos los usuarios
 movimientos = load_json(MOVIMIENTOS_FILE, default_movs)
 for c in cuentas:
     movimientos.setdefault(c["usuario"], [])
 
-# Función para identificar banco (puedes mantener/editar la lista)
+
 def identificar_banco(legajo):
     bancos = {
         "100": "Banco Santander",
@@ -45,21 +44,6 @@ def identificar_banco(legajo):
         "400": "Banco Nación"
     }
     return bancos.get(legajo, "Banco no encontrado")
-
-
-def guardar_cuentas():
-    # guardado atómico
-    tmp = CUENTAS_FILE + ".tmp"
-    with open(tmp, "w", encoding="utf-8") as f:
-        json.dump(cuentas, f, indent=2, ensure_ascii=False)
-    os.replace(tmp, CUENTAS_FILE)
-
-
-def guardar_movimientos():
-    tmp = MOVIMIENTOS_FILE + ".tmp"
-    with open(tmp, "w", encoding="utf-8") as f:
-        json.dump(movimientos, f, indent=2, ensure_ascii=False)
-    os.replace(tmp, MOVIMIENTOS_FILE)
 
 
 def guardar_datos():
@@ -72,43 +56,32 @@ def guardar_datos():
         return
 
     # buscar cuenta
-    cuenta = None
-    for c in cuentas:
-        if c["usuario"] == usuario_val:
-            cuenta = c
-            break
-
+    cuenta = next((c for c in cuentas if c["usuario"] == usuario_val), None)
     if cuenta is None:
         messagebox.showerror("Acceso denegado", "Usuario no encontrado.")
         return
 
-    # validar password
     if cuenta["password"] != pass_val:
         messagebox.showerror("Acceso denegado", "Contraseña incorrecta.")
         return
 
-    # validar legajo coincide con la cuenta
     if cuenta["legajo"] != legajo_val:
         messagebox.showerror("Acceso denegado", "Legajo no corresponde a la cuenta.")
         return
 
-    # Todo OK — abrir ventana de cuenta pasando la cuenta (y rutas internas)
-    messagebox.showinfo("Resultado", f"Usuario: {usuario_val}\nBanco: {identificar_banco(legajo_val)}")
-    inicio.abrir_pagina_cuenta(cuenta, CUENTAS_FILE, MOVIMIENTOS_FILE)
+    # Abrir ventana de cuenta como modal
+    inicio.abrir_pagina_cuenta(cuenta, CUENTAS_FILE, MOVIMIENTOS_FILE, parent=ventana)
 
 
-#  INTERFAZ LOGIN
+# --- INTERFAZ LOGIN ---
 ventana = tk.Tk()
 ventana.geometry("600x500")
 ventana.resizable(False, False)
 ventana.title("Login - Grupo XML")
 
-titulo = tk.Label(ventana, text="GRUPO XML", font=("Arial", 18, "bold"))
-titulo.pack(pady=(20, 40))
-
-info = tk.Label(ventana, text="Bienvenido al GRUPO XML.\nTrabajamos con Banco Galicia, Santander,\nBBVA, Banco Nación entre otros.",
-                font=("Arial", 14))
-info.pack(pady=(20, 60))
+tk.Label(ventana, text="GRUPO XML", font=("Arial", 18, "bold")).pack(pady=(20, 40))
+tk.Label(ventana, text="Bienvenido al GRUPO XML.\nTrabajamos con Banco Galicia, Santander,\nBBVA, Banco Nación entre otros.",
+         font=("Arial", 14)).pack(pady=(20, 60))
 
 # Usuario
 frame_usuario = tk.Frame(ventana)
@@ -131,7 +104,6 @@ tk.Label(frame_legajo, text="Legajo: ", font=("Arial", 14, "bold")).pack(side="l
 lega = tk.Entry(frame_legajo, font=("Arial", 14), width=25)
 lega.pack(side="left")
 
-# Botón
 tk.Button(ventana, text="Ingresar", font=("Arial", 16, "bold"), bd=4, command=guardar_datos).pack(pady=20)
 
 ventana.mainloop()
