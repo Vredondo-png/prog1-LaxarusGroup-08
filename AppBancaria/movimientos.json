@@ -1,54 +1,27 @@
+
 {
-  "alice": [
+  "miguel": [
     {
       "tipo": "deposito",
       "monto": 10000,
-      "fecha": "2025-01-01 00:00:00",
+      "fecha": "2025-09-28 00:00:00",
       "nota": "Depósito inicial"
     },
     {
       "tipo": "depósito",
       "monto": 5000.0,
-      "fecha": "2025-09-28 01:50:59",
+      "fecha": "2025-09-28 01:29:34",
       "nota": "Depósito desde app"
     },
     {
       "tipo": "retiro",
-      "monto": 454.0,
-      "fecha": "2025-09-28 01:51:02",
+      "monto": 500.0,
+      "fecha": "2025-09-28 01:29:39",
       "nota": "Retiro desde app"
     }
   ],
-  "bob": [
-    {
-      "tipo": "deposito",
-      "monto": 5000,
-      "fecha": "2025-01-01 00:00:00",
-      "nota": "Depósito inicial"
-    }
-  ],
-  "carol": [
-    {
-      "tipo": "deposito",
-      "monto": 7500,
-      "fecha": "2025-01-01 00:00:00",
-      "nota": "Depósito inicial"
-    }
-  ],
-  "david": [
-    {
-      "tipo": "deposito",
-      "monto": 2000,
-      "fecha": "2025-01-01 00:00:00",
-      "nota": "Depósito inicial"
-    }
-  ],
-  "eva": [
-    {
-      "tipo": "deposito",
-      "monto": 1500,
-      "fecha": "2025-01-01 00:00:00",
-      "nota": "Depósito inicial"
-    }
-  ]
+  "sergei": [],
+  "valentin": [],
+  "candela": [],
+  "usuario": []
 }

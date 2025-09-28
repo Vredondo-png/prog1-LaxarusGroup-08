@@ -1,32 +1,33 @@
 [
   {
-    "usuario": "alice",
-    "password": "alice123",
+    "usuario": "sergei",
+    "password": "12345guli",
     "legajo": "100",
-    "saldo": 14546.0
-  },
-  {
-    "usuario": "bob",
-    "password": "bob123",
-    "legajo": "200",
     "saldo": 5000
   },
   {
-    "usuario": "carol",
-    "password": "carol123",
-    "legajo": "300",
-    "saldo": 7500
+    "usuario": "miguel",
+    "password": "siam10",
+    "legajo": "200",
+    "saldo": 8000.0
   },
   {
-    "usuario": "david",
-    "password": "david123",
+    "usuario": "valentin",
+    "password": "5151valentin",
+    "legajo": "100",
+    "saldo": 5520
+  },
+  {
+    "usuario": "candela",
+    "password": "123deop",
+    "legajo": "300",
+    "saldo": 5595
+  },
+  {
+    "usuario": "usuario",
+    "password": "158jijo",
     "legajo": "400",
     "saldo": 2000
-  },
-  {
-    "usuario": "eva",
-    "password": "eva123",
-    "legajo": "100",
-    "saldo": 1500
   }
 ]
+
