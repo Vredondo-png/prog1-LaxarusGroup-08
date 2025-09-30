@@ -3,8 +3,8 @@ from tkinter import messagebox
 import json
 import os
 import inicio
-
-BASE_DIR = os.path.dirname(__file__)
+#__file__ hace que BASE_DIR sea ahora la ruta del archivo AppBancaria y pueda ejecutar el codigo desde cualquier parte.
+BASE_DIR = os.path.dirname(__file__) 
 CUENTAS_FILE = os.path.join(BASE_DIR, "cuentas.json")
 MOVIMIENTOS_FILE = os.path.join(BASE_DIR, "movimientos.json")
 
@@ -104,6 +104,6 @@ tk.Label(frame_legajo, text="Legajo: ", font=("Arial", 14, "bold")).pack(side="l
 lega = tk.Entry(frame_legajo, font=("Arial", 14), width=25)
 lega.pack(side="left")
 
-tk.Button(ventana, text="Ingresar", font=("Arial", 16, "bold"), bd=4, command=guardar_datos).pack(pady=20)
+tk.Button(ventana, text="Ingresar", font=("Arial", 16, "bold"),bd=7,bg="red", command=guardar_datos).pack(pady=20)
 
 ventana.mainloop()
