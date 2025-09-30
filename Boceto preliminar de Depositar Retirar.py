@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
+import os
 
 # Datos de bancos y ubicaciones
 bancos = [
@@ -20,13 +21,25 @@ ubicaciones = {
     "Banco Ciudad": ["Centro", "Barrio Norte", "Villa Crespo", "Chacarita", "Agronomía"]
 }
 
+def cargar_logo(ruta_logo):
+    """Cargar logo (solo formato .gif o .ppm)"""
+    try:
+        if os.path.exists(ruta_logo):
+            return tk.PhotoImage(file=ruta_logo)
+        else:
+            print(f"Archivo no encontrado: {ruta_logo}")
+            return None
+    except Exception as e:
+        print(f"Error al cargar el logo: {e}")
+        return None
+
 def cambiar_operacion(operacion_var, ubicacion_label, ubicacion_combo, banco_var, ubicacion_var):
     if operacion_var.get() == "depositar":
         ubicacion_label.grid_remove()
         ubicacion_combo.grid_remove()
     else:
-        ubicacion_label.grid(row=4, column=0, sticky=tk.W, pady=5)
-        ubicacion_combo.grid(row=4, column=1, sticky=tk.W, padx=(10, 0), pady=5)
+        ubicacion_label.grid(row=5, column=0, sticky=tk.W, pady=5)
+        ubicacion_combo.grid(row=5, column=1, sticky=tk.W, padx=(10, 0), pady=5)
         actualizar_ubicaciones(None, ubicacion_combo, banco_var, ubicacion_var)
 
 def actualizar_ubicaciones(event, ubicacion_combo, banco_var, ubicacion_var):
@@ -58,13 +71,17 @@ def es_numero_valido(texto):
 def procesar_operacion(monto_var, operacion_var, banco_var, ubicacion_var, resultado_text):
     # Validar monto
     monto_texto = monto_var.get()
-    if es_numero_valido(monto_texto)> 25000000:
-        messagebox.showerror("Error", "Ingrese una cantidad de dinero que tenga")
+    if not es_numero_valido(monto_texto):
+        messagebox.showerror("Error", "Ingrese un monto válido")
         return
     
     monto = float(monto_texto.replace(',', '.'))
     if monto <= 0:
         messagebox.showerror("Error", "El monto debe ser mayor a 0")
+        return
+    
+    if monto > 25000000:
+        messagebox.showerror("Error", "Ingrese una cantidad de dinero que tenga")
         return
     
     # Validar banco
@@ -114,18 +131,37 @@ def limpiar_campos(monto_var, banco_var, ubicacion_var, operacion_var, resultado
 def ejecutar_aplicacion():
     # Crear ventana principal
     root = tk.Tk()
-    root.title("Depositar y Retirar")
-    root.geometry("500x400")
+    root.title("🏦 Depositar y Retirar")
+    root.geometry("500x450")
     root.resizable(False, False)
     
     # Frame principal
     main_frame = ttk.Frame(root, padding="20")
     main_frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
     
-    # Título
-    title_label = ttk.Label(main_frame, text="Sistema de Depósitos y Retiros", 
-                           font=("Arial", 16, "bold"))
-    title_label.grid(row=0, column=0, columnspan=2, pady=(0, 20))
+    # Frame para el header (logo + título)
+    header_frame = ttk.Frame(main_frame)
+    header_frame.grid(row=0, column=0, columnspan=2, pady=(0, 20))
+    
+    # Usar solo emoji como logo
+    logo_image = None  # No cargar imagen externa
+    
+    if logo_image:
+        # Si se carga el logo, mostrarlo junto al título
+        logo_label = ttk.Label(header_frame, image=logo_image)
+        logo_label.pack(side=tk.LEFT, padx=(0, 10))
+        
+        # Mantener referencia a la imagen
+        logo_label.image = logo_image
+        
+        title_label = ttk.Label(header_frame, text="Sistema de Depósitos y Retiros", 
+                               font=("Arial", 16, "bold"))
+        title_label.pack(side=tk.LEFT)
+    else:
+        # Si no se puede cargar el logo, solo mostrar el título
+        title_label = ttk.Label(header_frame, text="🏦 Sistema de Depósitos y Retiros", 
+                               font=("Arial", 16, "bold"))
+        title_label.pack()
     
     # Variables
     monto_var = tk.StringVar()
@@ -162,16 +198,16 @@ def ejecutar_aplicacion():
     
     # Banco
     ttk.Label(main_frame, text="Banco:", font=("Arial", 10, "bold")).grid(
-        row=3, column=0, sticky=tk.W, pady=5)
+        row=4, column=0, sticky=tk.W, pady=5)
     banco_combo = ttk.Combobox(main_frame, textvariable=banco_var, 
                                values=bancos, state="readonly", width=18)
-    banco_combo.grid(row=3, column=1, sticky=tk.W, padx=(10, 0), pady=5)
+    banco_combo.grid(row=4, column=1, sticky=tk.W, padx=(10, 0), pady=5)
     banco_combo.bind("<<ComboboxSelected>>", lambda event: actualizar_ubicaciones(event, ubicacion_combo, banco_var, ubicacion_var))
     
     # Frame para resultado
     resultado_frame = ttk.LabelFrame(main_frame, text="Resumen de la operación", 
                                     padding="10")
-    resultado_frame.grid(row=5, column=0, columnspan=2, pady=(20, 10), sticky=(tk.W, tk.E))
+    resultado_frame.grid(row=6, column=0, columnspan=2, pady=(20, 10), sticky=(tk.W, tk.E))
     
     resultado_text = tk.Text(resultado_frame, height=6, width=50, wrap=tk.WORD)
     resultado_text.grid(row=0, column=0, sticky=(tk.W, tk.E))
@@ -184,7 +220,7 @@ def ejecutar_aplicacion():
     
     # Botones
     button_frame = ttk.Frame(main_frame)
-    button_frame.grid(row=6, column=0, columnspan=2, pady=10)
+    button_frame.grid(row=7, column=0, columnspan=2, pady=10)
     
     ttk.Button(button_frame, text="Procesar", 
                command=lambda: procesar_operacion(monto_var, operacion_var, banco_var, ubicacion_var, resultado_text)).pack(side=tk.LEFT, padx=5)
@@ -196,9 +232,6 @@ def ejecutar_aplicacion():
     cambiar_operacion(operacion_var, ubicacion_label, ubicacion_combo, banco_var, ubicacion_var)
     
     root.mainloop()
-    
-    
-    
     
 if __name__ == "__main__":
     ejecutar_aplicacion()
