@@ -97,10 +97,10 @@ def abrir_pagina_cuenta(cuenta, cuentas_file, movimientos_file, parent=None):
     frame_btn = tk.Frame(cuenta_win)
     frame_btn.pack(pady=20)
     tk.Button(frame_btn, text="Deposito/Retiro", font=("Arial", 14, "bold"), command=abrir_deposito_retiro,
-              bd=4, width=18,bg="red").grid(row=0, column=0, padx=10)
+              bd=7, width=18,bg="red").grid(row=0, column=0, padx=10)
     tk.Button(frame_btn, text="Pago de servicios", font=("Arial", 14, "bold"),
-              command=lambda: messagebox.showinfo("Info", "Próximamente..."), bd=4, width=18,bg="red").grid(row=0, column=1, padx=10)
+              command=lambda: messagebox.showinfo("Info", "Próximamente..."), bd=7, width=18,bg="red").grid(row=0, column=1, padx=10)
     tk.Button(frame_btn, text="Compra de divisas", font=("Arial", 14, "bold"),
-              command=lambda: messagebox.showinfo("Info", "Próximamente..."), bd=4, width=18,bg="red").grid(row=0, column=2, padx=10)
+              command=lambda: messagebox.showinfo("Info", "Próximamente..."), bd=7, width=18,bg="red").grid(row=0, column=2, padx=10)
     tk.Button(frame_btn, text="Cerrar", font=("Arial", 14, "bold"), command=cuenta_win.destroy,
-              bd=4, width=18,bg="red").grid(row=0, column=3, padx=10)
+              bd=7, width=18,bg="red").grid(row=0, column=3, padx=10)
