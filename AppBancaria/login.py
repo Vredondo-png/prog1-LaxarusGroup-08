@@ -3,6 +3,8 @@ from tkinter import messagebox
 import json
 import os
 import inicio
+from PIL import Image, ImageTk   # <--- IMPORTANTE
+
 #__file__ hace que BASE_DIR sea ahora la ruta del archivo AppBancaria y pueda ejecutar el codigo desde cualquier parte.
 BASE_DIR = os.path.dirname(__file__) 
 CUENTAS_FILE = os.path.join(BASE_DIR, "cuentas.json")
@@ -73,15 +75,25 @@ def guardar_datos():
     inicio.abrir_pagina_cuenta(cuenta, CUENTAS_FILE, MOVIMIENTOS_FILE, parent=ventana)
 
 
-# --- INTERFAZ LOGIN ---
+# --- INTERFAZ LOGIN --- #
 ventana = tk.Tk()
-ventana.geometry("600x500")
+ventana.geometry("800x800")
 ventana.resizable(False, False)
 ventana.title("Login - Grupo XML")
 
-tk.Label(ventana, text="GRUPO XML", font=("Arial", 18, "bold")).pack(pady=(20, 40))
+# Imagen (logo)
+imagen_path = os.path.join(BASE_DIR, "IMG/foto.jpg") 
+img = Image.open(imagen_path)
+img = img.resize((200, 200))   # Ajustar tamaño
+imagen_tk = ImageTk.PhotoImage(img)
+
+label_imagen = tk.Label(ventana, image=imagen_tk)
+label_imagen.pack(pady=(20, 10))
+
+# Texto principal
+tk.Label(ventana, text="GRUPO XML", font=("Arial", 18, "bold")).pack(pady=(5, 20))
 tk.Label(ventana, text="Bienvenido al GRUPO XML.\nTrabajamos con Banco Galicia, Santander,\nBBVA, Banco Nación entre otros.",
-         font=("Arial", 14)).pack(pady=(20, 60))
+         font=("Arial", 14)).pack(pady=(5, 30))
 
 # Usuario
 frame_usuario = tk.Frame(ventana)
@@ -104,6 +116,7 @@ tk.Label(frame_legajo, text="Legajo: ", font=("Arial", 14, "bold")).pack(side="l
 lega = tk.Entry(frame_legajo, font=("Arial", 14), width=25)
 lega.pack(side="left")
 
-tk.Button(ventana, text="Ingresar", font=("Arial", 16, "bold"),bd=7,bg="red", command=guardar_datos).pack(pady=20)
+# Botón ingresar
+tk.Button(ventana, text="Ingresar", font=("Arial", 16, "bold"), bd=7, bg="red", command=guardar_datos).pack(pady=20)
 
 ventana.mainloop()
