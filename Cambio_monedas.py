@@ -23,9 +23,7 @@ def corregir_input():
 
 # Funcion para obtener tasa
 def get_currency(moneda):
-    for i in range(len(monedas)):
-        if moneda == monedas[i]:
-            return currency[i]
+    return currency[moneda]
 
 # Funcion para mostrar tasas
 def display_tasa():
@@ -77,18 +75,13 @@ def on_combobox_changed(event):
 
 # Funcion para obtener current saldo depende de moneda elegida
 def get_displayed_saldo():
-    for i in range(len(monedas)):
-        if var_moneda1.get() == monedas[i]:
-            return saldos[i]
+    return user[var_moneda1.get()]
         
 def get_saldo(moneda):
-    for i in range(len(monedas)):
-        if moneda == monedas[i]:
-            return saldos[i]
+    return user[moneda]
 
 # Funcion para configurar texto de currnet saldo
 def set_displayed_saldo():
-    #var_displayed_saldo.set(value=f"Saldo: {var_moneda1.get()} {str(get_displayed_saldo())}")
     return f"Saldo: {var_moneda1.get()} {str(get_displayed_saldo())}"
 
 # Funcion para ejecutar intercambio
@@ -104,11 +97,8 @@ def intercambiar():
         close_button.pack(pady=10)
         var_amount1.set(value=get_displayed_saldo())
     else:
-        for i in range(len(saldos)):
-            if monedas[i] == var_moneda1.get():
-                saldos[i] = saldos[i] - var_amount1.get()
-            elif monedas[i] == var_moneda2.get():
-                saldos[i] = saldos[i] + var_amount2.get()
+        user[var_moneda1.get()] = user[var_moneda1.get()] - var_amount1.get()
+        user[var_moneda2.get()] = user[var_moneda2.get()] + var_amount2.get()
         resultado_text.insert(2.0,f"Saldo actual:\n")
         resultado_text.insert(3.0,f"ARS: {str(get_saldo('ARS'))}\n")
         resultado_text.insert(4.0,f"USD: {str(get_saldo('USD'))}\n")     
@@ -134,10 +124,22 @@ title_label.pack(pady=10)
 main_frame = tk.Frame(root)
 main_frame.pack(pady=10)
 
-# Listas
-monedas = ['ARS', 'USD', 'EUR', 'BRL']
-currency = [1.0, 0.00074, 0.00064, 0.0040]
-saldos = [9999.0, 34.0, 2456.0, 1000.0]
+#Diccionarios
+user = {
+    "username": "sguliaev",
+    "password": "Hd^3fjudf",
+    "ARS": 9999.0,
+    "USD": 34.0,
+    "EUR": 2456.0,
+    "BRL": 1000.0
+}
+
+currency = {
+    "ARS": 1.0,
+    "USD": 0.00074,
+    "EUR": 0.00064,
+    "BRL": 0.0040
+}
 
 # Variables
 var_moneda1 = tk.StringVar()
@@ -145,10 +147,10 @@ var_moneda2 = tk.StringVar()
 var_amount1 = tk.DoubleVar(value=0.0)
 var_amount2 = tk.DoubleVar(value=0.0)
 var_displayed_saldo = tk.StringVar()
-var_currency = tk.StringVar(value=f"1 ARS = {currency[1]} USD")
+var_currency = tk.StringVar(value=f"1 ARS = {currency["USD"]} USD")
 
 # Combobox Moneda №1
-combobox_moneda1 = ttk.Combobox(main_frame, textvariable=var_moneda1, values=monedas, state='readonly', width=5)
+combobox_moneda1 = ttk.Combobox(main_frame, textvariable=var_moneda1, values=list(currency.keys()), state='readonly', width=5)
 combobox_moneda1.current(0)
 combobox_moneda1.grid(row=0, column=0, pady=0, padx=10)
 combobox_moneda1.bind("<<ComboboxSelected>>", on_combobox_changed)
@@ -164,7 +166,7 @@ label_saldo = ttk.Label(main_frame, textvariable=var_displayed_saldo, font=("Ari
 label_saldo.grid(row=1, column=1, padx=10, sticky='W')
 
 # Combobox Moneda №2
-combobox_moneda2 = ttk.Combobox(main_frame, textvariable=var_moneda2, values=monedas, state='readonly', width=5)
+combobox_moneda2 = ttk.Combobox(main_frame, textvariable=var_moneda2, values=list(currency.keys()), state='readonly', width=5)
 combobox_moneda2.current(1)
 combobox_moneda2.grid(row=2, column=0, pady=10, padx=10)
 combobox_moneda2.bind("<<ComboboxSelected>>", on_combobox_changed)
