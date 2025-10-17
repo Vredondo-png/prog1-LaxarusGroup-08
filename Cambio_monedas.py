@@ -1,6 +1,30 @@
 from tkinter import *
 from tkinter import ttk
 import tkinter as tk
+from pathlib import Path
+import json
+
+
+
+# Acceder user info
+username = "valentin"
+current_dir = str(Path(__file__).parent)
+file_path = current_dir + "\\" + "AppBancaria" + "\\" + "cuentas.json"
+contenido = open(file_path)
+cuentas_str = contenido.read()
+cuentas_lista = json.loads(cuentas_str)
+for i in range (len(cuentas_lista)):
+    if cuentas_lista[i]['usuario'] == username:
+        indx = i
+user = cuentas_lista[indx]
+contenido.close()
+
+currency = {
+    "ARS": 1.0,
+    "USD": 0.00074,
+    "EUR": 0.00064,
+    "BRL": 0.0040
+}
 
 # Funcion para comprobar input
 def corregir_input():
@@ -75,10 +99,21 @@ def on_combobox_changed(event):
 
 # Funcion para obtener current saldo depende de moneda elegida
 def get_displayed_saldo():
-    return user[var_moneda1.get()]
+    if var_moneda1.get() == "ARS":
+        return user['saldo']
+    elif var_moneda1.get() == "USD":
+        return user['saldo_USD']
+    elif var_moneda1.get() == "EUR":
+        return user['saldo_EUR']
+    elif var_moneda1.get() == "BRL":
+        return user['saldo_BRL']
         
 def get_saldo(moneda):
-    return user[moneda]
+    if moneda == "ARS":
+        return user['saldo']
+    else:
+        tipo_saldo = "saldo_" + moneda
+        return user[moneda]
 
 # Funcion para configurar texto de currnet saldo
 def set_displayed_saldo():
@@ -97,15 +132,30 @@ def intercambiar():
         close_button.pack(pady=10)
         var_amount1.set(value=get_displayed_saldo())
     else:
-        user[var_moneda1.get()] = user[var_moneda1.get()] - var_amount1.get()
-        user[var_moneda2.get()] = user[var_moneda2.get()] + var_amount2.get()
+        tipo_saldo1 = "saldo"
+        tipo_saldo2 = "saldo"
+        if var_moneda1.get() != "ARS":
+            tipo_saldo1 = "saldo" + "_" + var_moneda1.get()
+        if var_moneda2.get() != "ARS":
+            tipo_saldo2 = "saldo" + "_" + var_moneda2.get()
+        user[tipo_saldo1] = user[tipo_saldo1] - var_amount1.get()
+        user[tipo_saldo2] = user[tipo_saldo2] + var_amount2.get()
+        cuentas_lista[indx] = user
+        print(cuentas_lista)
+        try:
+            with open(file_path, 'w', encoding='utf-8') as f:
+                json.dump(cuentas_lista, f, ensure_ascii=False, indent=4)
+            print(f"List successfully written")
+        except:
+            print(f"List NOT written ")
         resultado_text.insert(2.0,f"Saldo actual:\n")
-        resultado_text.insert(3.0,f"ARS: {str(get_saldo('ARS'))}\n")
-        resultado_text.insert(4.0,f"USD: {str(get_saldo('USD'))}\n")     
-        resultado_text.insert(5.0,f"EUR: {str(get_saldo('EUR'))}\n")
-        resultado_text.insert(6.0,f"BRL: {str(get_saldo('BRL'))}\n")
+        resultado_text.insert(3.0,f"ARS: {str(get_saldo('saldo'))}\n")
+        resultado_text.insert(4.0,f"USD: {str(get_saldo('saldo_USD'))}\n")     
+        resultado_text.insert(5.0,f"EUR: {str(get_saldo('saldo_EUR'))}\n")
+        resultado_text.insert(6.0,f"BRL: {str(get_saldo('saldo_BRL'))}\n")
         resultado_text.insert(7.0,"-------------------------------\n")
         var_displayed_saldo.set(value=set_displayed_saldo())
+
 
     if get_displayed_saldo() == 0.0:
         var_amount1.set(value=0.0)
@@ -124,22 +174,7 @@ title_label.pack(pady=10)
 main_frame = tk.Frame(root)
 main_frame.pack(pady=10)
 
-#Diccionarios
-user = {
-    "username": "sguliaev",
-    "password": "Hd^3fjudf",
-    "ARS": 9999.0,
-    "USD": 34.0,
-    "EUR": 2456.0,
-    "BRL": 1000.0
-}
 
-currency = {
-    "ARS": 1.0,
-    "USD": 0.00074,
-    "EUR": 0.00064,
-    "BRL": 0.0040
-}
 
 # Variables
 var_moneda1 = tk.StringVar()
