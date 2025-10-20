@@ -3,70 +3,79 @@ from tkinter import messagebox
 import json
 import os
 import inicio
-from PIL import Image, ImageTk   # <--- IMPORTANTE
+from PIL import Image, ImageTk
 
-#__file__ hace que BASE_DIR sea ahora la ruta del archivo AppBancaria y pueda ejecutar el codigo desde cualquier parte.
-BASE_DIR = os.path.dirname(__file__) 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 CUENTAS_FILE = os.path.join(BASE_DIR, "cuentas.json")
 MOVIMIENTOS_FILE = os.path.join(BASE_DIR, "movimientos.json")
+TXT_FILE = os.path.join(BASE_DIR, "datos_por_defecto.txt")
 
-
+# === Función para cargar JSON con valor por defecto ===
 def load_json(path, default):
     if not os.path.exists(path):
         with open(path, "w", encoding="utf-8") as f:
             json.dump(default, f, indent=2, ensure_ascii=False)
         return default
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except:
+        return default
+
+# === Función para leer cuentas desde TXT ===
+def cargar_cuentas_desde_txt(path):
+    cuentas = []
+    if not os.path.exists(path):
+        return cuentas
     with open(path, "r", encoding="utf-8") as f:
-        return json.load(f)
+        for linea in f:
+            linea = linea.strip()
+            if not linea:
+                continue
+            partes = linea.split(",")
+            if len(partes) == 4:
+                usuario, password, legajo, saldo = partes
+                cuentas.append({
+                    "usuario": usuario,
+                    "password": password,
+                    "legajo": legajo,
+                    "saldo": int(saldo)
+                })
+    return cuentas
 
+# === Cargar cuentas y generar movimientos iniciales ===
+default_cuentas = cargar_cuentas_desde_txt(TXT_FILE)
+default_movs = {
+    c["usuario"]: [
+        {"tipo": "deposito", "monto": c["saldo"], "fecha": "2025-01-08 00:00:00", "nota": "Depósito inicial"}
+    ] for c in default_cuentas
+}
 
-# Archivos por defecto
-default_cuentas = [
-    {"usuario": "alice", "password": "alice123", "legajo": "100", "saldo": 10000},
-    {"usuario": "bob",   "password": "bob123",   "legajo": "200", "saldo": 5000},
-    {"usuario": "carol", "password": "carol123", "legajo": "300", "saldo": 7500},
-    {"usuario": "david", "password": "david123", "legajo": "400", "saldo": 2000},
-    {"usuario": "eva",   "password": "eva123",   "legajo": "100", "saldo": 1500}
-]
-default_movs = {acct["usuario"]: [
-    {"tipo": "deposito", "monto": acct["saldo"], "fecha": "2025-01-08 00:00:00", "nota": "Depósito inicial"}
-] for acct in default_cuentas}
-
+# === Cargar o crear archivos principales ===
 cuentas = load_json(CUENTAS_FILE, default_cuentas)
 movimientos = load_json(MOVIMIENTOS_FILE, default_movs)
+
+# Asegurar que cada cuenta tenga movimientos
 for c in cuentas:
     movimientos.setdefault(c["usuario"], [])
 
-
-def identificar_banco(legajo):
-    bancos = {
-        "100": "Banco Santander",
-        "200": "BBVA",
-        "300": "Banco Galicia",
-        "400": "Banco Nación"
-    }
-    return bancos.get(legajo, "Banco no encontrado")
-
-
-def guardar_datos():
-    usuario_val = user.get().strip()
-    pass_val = password.get().strip()
-    legajo_val = lega.get().strip()
+# === Función de login ===
+def guardar_datos(user_entry, password_entry, lega_entry):
+    usuario_val = user_entry.get().strip()
+    pass_val = password_entry.get().strip()
+    legajo_val = lega_entry.get().strip()
 
     if not usuario_val or not pass_val or not legajo_val:
         messagebox.showwarning("Error", "Complete todos los campos.")
         return
 
-    # buscar cuenta
     cuenta = next((c for c in cuentas if c["usuario"] == usuario_val), None)
-    if cuenta is None:
+    if not cuenta:
         messagebox.showerror("Acceso denegado", "Usuario no encontrado.")
         return
-
     if cuenta["password"] != pass_val:
         messagebox.showerror("Acceso denegado", "Contraseña incorrecta.")
         return
-
     if cuenta["legajo"] != legajo_val:
         messagebox.showerror("Acceso denegado", "Legajo no corresponde a la cuenta.")
         return
@@ -74,21 +83,20 @@ def guardar_datos():
     # Abrir ventana de cuenta como modal
     inicio.abrir_pagina_cuenta(cuenta, CUENTAS_FILE, MOVIMIENTOS_FILE, parent=ventana)
 
-
-# --- INTERFAZ LOGIN --- #
+# === INTERFAZ LOGIN ===
 ventana = tk.Tk()
 ventana.geometry("800x800")
 ventana.resizable(False, False)
 ventana.title("Login - Grupo XML")
 
 # Imagen (logo)
-imagen_path = os.path.join(BASE_DIR, "IMG/foto.jpg") 
-img = Image.open(imagen_path)
-img = img.resize((200, 200))   # Ajustar tamaño
-imagen_tk = ImageTk.PhotoImage(img)
-
-label_imagen = tk.Label(ventana, image=imagen_tk)
-label_imagen.pack(pady=(20, 10))
+imagen_path = os.path.join(BASE_DIR, "IMG/foto.jpg")
+if os.path.exists(imagen_path):
+    img = Image.open(imagen_path)
+    img = img.resize((200, 200))
+    imagen_tk = ImageTk.PhotoImage(img)
+    label_imagen = tk.Label(ventana, image=imagen_tk)
+    label_imagen.pack(pady=(20, 10))
 
 # Texto principal
 tk.Label(ventana, text="GRUPO XML", font=("Arial", 18, "bold")).pack(pady=(5, 20))
@@ -117,6 +125,13 @@ lega = tk.Entry(frame_legajo, font=("Arial", 14), width=25)
 lega.pack(side="left")
 
 # Botón ingresar
-tk.Button(ventana, text="Ingresar", font=("Arial", 16, "bold"), bd=7, bg="red", command=guardar_datos).pack(pady=20)
+tk.Button(
+    ventana,
+    text="Ingresar",
+    font=("Arial", 16, "bold"),
+    bd=7,
+    bg="red",
+    command=lambda: guardar_datos(user, password, lega)
+).pack(pady=20)
 
 ventana.mainloop()
