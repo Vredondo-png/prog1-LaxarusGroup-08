@@ -1,0 +1,5 @@
+alice,alice123,100,10000
+bob,bob123,200,5000
+carol,carol123,300,7500
+david,david123,400,2000
+eva,eva123,100,1500
