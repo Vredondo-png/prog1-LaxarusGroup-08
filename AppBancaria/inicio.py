@@ -3,6 +3,7 @@ from tkinter import messagebox
 import json
 import os
 from datetime import datetime
+from cambio import *
 
 def load_json(path, default):
     if not os.path.exists(path):
@@ -101,6 +102,6 @@ def abrir_pagina_cuenta(cuenta, cuentas_file, movimientos_file, parent=None):
     tk.Button(frame_btn, text="Pago de servicios", font=("Arial", 14, "bold"),
               command=lambda: messagebox.showinfo("Info", "Próximamente..."), bd=7, width=18,bg="red").grid(row=0, column=1, padx=10)
     tk.Button(frame_btn, text="Compra de divisas", font=("Arial", 14, "bold"),
-              command=lambda: messagebox.showinfo("Info", "Próximamente..."), bd=7, width=18,bg="red").grid(row=0, column=2, padx=10)
+              command=lambda: programa_intercambio(cuenta_win, usuario), bd=7, width=18,bg="red").grid(row=0, column=2, padx=10)
     tk.Button(frame_btn, text="Cerrar", font=("Arial", 14, "bold"), command=cuenta_win.destroy,
               bd=7, width=18,bg="red").grid(row=0, column=3, padx=10)

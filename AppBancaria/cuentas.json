@@ -12,8 +12,8 @@
         "usuario": "miguel",
         "password": "siam10",
         "legajo": "200",
-        "saldo": 8000.0,
-        "saldo_USD": 0,
+        "saldo": 2430.0,
+        "saldo_USD": 4.1218,
         "saldo_EUR": 0,
         "saldo_BRL": 0
     },
@@ -21,8 +21,8 @@
         "usuario": "valentin",
         "password": "5151valentin",
         "legajo": "100",
-        "saldo": 4520.0,
-        "saldo_USD": 0.74,
+        "saldo": 1202.702702702703,
+        "saldo_USD": 3.1947999999999963,
         "saldo_EUR": 0,
         "saldo_BRL": 0
     },
