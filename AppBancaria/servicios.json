@@ -1,0 +1,5 @@
+[
+  {"codigo": "100", "nombre": "AYSA", "monto": 500},
+  {"codigo": "200", "nombre": "Metrogas", "monto": 750},
+  {"codigo": "300", "nombre": "Edesur", "monto": 620}
+]

@@ -1,0 +1,81 @@
+{
+  "miguel": [
+    {
+      "tipo": "deposito",
+      "monto": 10000,
+      "fecha": "2025-09-28 00:00:00",
+      "nota": "Depósito inicial"
+    },
+    {
+      "tipo": "depósito",
+      "monto": 5000.0,
+      "fecha": "2025-09-28 01:29:34",
+      "nota": "Depósito desde app"
+    },
+    {
+      "tipo": "retiro",
+      "monto": 500.0,
+      "fecha": "2025-09-28 01:29:39",
+      "nota": "Retiro desde app"
+    },
+    {
+      "tipo": "deposito",
+      "monto": 500.0,
+      "fecha": "2025-10-31 16:30:53",
+      "nota": "Depósito en Banco Nación"
+    },
+    {
+      "tipo": "deposito",
+      "monto": 2000.0,
+      "fecha": "2025-10-31 16:31:29",
+      "nota": "Depósito en BBVA"
+    },
+    {
+      "tipo": "deposito",
+      "monto": 500.0,
+      "fecha": "2025-10-31 16:35:55",
+      "nota": "Depósito en Banco Galicia"
+    },
+    {
+      "tipo": "pago",
+      "monto": 3000,
+      "fecha": "2025-10-31 16:47:30",
+      "nota": "Recarga Movistar 1137782431"
+    },
+    {
+      "tipo": "pago",
+      "monto": 7000,
+      "fecha": "2025-10-31 16:51:54",
+      "nota": "Recarga Personal 1137782431"
+    },
+    {
+      "tipo": "deposito",
+      "monto": 500000.0,
+      "fecha": "2025-10-31 17:15:56",
+      "nota": "Depósito en Banco Galicia"
+    },
+    {
+      "tipo": "deposito",
+      "monto": 500000.0,
+      "fecha": "2025-11-01 04:34:28",
+      "nota": "Depósito en Banco Nación"
+    },
+    {
+      "tipo": "pago",
+      "monto": 7000,
+      "fecha": "2025-11-01 04:34:49",
+      "nota": "Recarga Personal 1137782431"
+    }
+  ],
+  "sergei": [
+    {
+      "tipo": "deposito",
+      "monto": 200.0,
+      "fecha": "2025-10-31 15:23:23",
+      "nota": "Depósito en Banco Nación"
+    }
+  ],
+  "valentin": [],
+  "candela": [],
+  "usuario": []
+}
