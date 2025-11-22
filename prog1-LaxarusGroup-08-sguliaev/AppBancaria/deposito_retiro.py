@@ -99,81 +99,123 @@ def abrir_deposito_retiro(parent, cuenta, cuentas_file, movimientos_file):
                 return codigo
         return None
 
-    # ===== CARGAR DATOS =====
+   
     bancos_data = cargar_bancos()
     ubicaciones_data = cargar_ubicaciones()
     
-    # ===== CREAR VENTANA =====
+   
     root = tk.Toplevel(parent)
     root.title("Depositar y Retirar")
-    root.geometry("500x500")
+    root.geometry("500x550")
     root.resizable(False, False)
     root.transient(parent)
     root.grab_set()
     
-    # Frame principal
+    
     main_frame = ttk.Frame(root, padding="20")
     main_frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
     
-    # Título
+   
     title_label = ttk.Label(main_frame, text="Sistema de Depósitos y Retiros", 
                         font=("Arial", 16, "bold"))
     title_label.grid(row=0, column=0, columnspan=2, pady=(0, 20))
     
-    # Variables
+   
     monto_var = tk.StringVar()
     operacion_var = tk.StringVar(value="depositar")
     banco_var = tk.StringVar()
     ubicacion_var = tk.StringVar()
     legajo_var = tk.StringVar()
     
-    # Monto
+    
     ttk.Label(main_frame, text="Monto ($):", font=("Arial", 10, "bold")).grid(
         row=1, column=0, sticky=tk.W, pady=5)
     monto_entry = ttk.Entry(main_frame, textvariable=monto_var, width=20)
     monto_entry.grid(row=1, column=1, sticky=tk.W, padx=(10, 0), pady=5)
     
-    # Tipo de operación
+    
     ttk.Label(main_frame, text="Operación:", font=("Arial", 10, "bold")).grid(
         row=2, column=0, sticky=tk.W, pady=5)
     
     radio_frame = ttk.Frame(main_frame)
     radio_frame.grid(row=2, column=1, sticky=tk.W, padx=(10, 0), pady=5)
     
-    # Elementos dinámicos
+    
+    ttk.Label(main_frame, text="Banco:", font=("Arial", 10, "bold")).grid(
+        row=3, column=0, sticky=tk.W, pady=5)
+    nombres_bancos = list(bancos_data.values())
+    banco_combo = ttk.Combobox(main_frame, textvariable=banco_var, 
+                            values=nombres_bancos, state="readonly", width=18)
+    banco_combo.grid(row=3, column=1, sticky=tk.W, padx=(10, 0), pady=5)
+    
+    
     ubicacion_label = ttk.Label(main_frame, text="Ubicación:", font=("Arial", 10, "bold"))
     ubicacion_combo = ttk.Combobox(main_frame, textvariable=ubicacion_var, 
                                 state="readonly", width=18)
     legajo_label = ttk.Label(main_frame, text="Legajo:", font=("Arial", 10, "bold"))
     legajo_entry = ttk.Entry(main_frame, textvariable=legajo_var, width=20)
     
+    def cargar_ubicaciones_combo():
+        """Carga las ubicaciones en el combo según el banco seleccionado"""
+        banco_seleccionado = banco_var.get()
+        
+        print(f"🔍 Cargando ubicaciones para banco: '{banco_seleccionado}'")
+        
+        if not banco_seleccionado:
+            print("⚠️ No hay banco seleccionado")
+            ubicacion_combo['values'] = []
+            ubicacion_var.set("")
+            return
+        
+        codigo_banco = obtener_codigo_banco(banco_seleccionado, bancos_data)
+        print(f"🏦 Código del banco: {codigo_banco}")
+        
+        if codigo_banco and codigo_banco in ubicaciones_data:
+            ubicaciones_lista = list(ubicaciones_data[codigo_banco].values())
+            print(f"📍 Ubicaciones encontradas: {ubicaciones_lista}")
+            ubicacion_combo['values'] = ubicaciones_lista
+            if ubicaciones_lista:
+                ubicacion_var.set(ubicaciones_lista[0])
+                print(f"✅ Ubicación seleccionada por defecto: {ubicaciones_lista[0]}")
+        else:
+            print(f"❌ No se encontraron ubicaciones para el código {codigo_banco}")
+            ubicacion_combo['values'] = []
+            ubicacion_var.set("")
+    
     def cambiar_operacion():
+        """Muestra u oculta campos según la operación seleccionada"""
+        print(f"🔄 Cambiando operación a: {operacion_var.get()}")
+        
+        # Ocultar todos los campos opcionales
         ubicacion_label.grid_remove()
         ubicacion_combo.grid_remove()
         legajo_label.grid_remove()
         legajo_entry.grid_remove()
         
+        # Mostrar campos según operación
         if operacion_var.get() == "retirar":
+            print("💰 Mostrando campos para RETIRAR")
             ubicacion_label.grid(row=4, column=0, sticky=tk.W, pady=5)
             ubicacion_combo.grid(row=4, column=1, sticky=tk.W, padx=(10, 0), pady=5)
-            actualizar_ubicaciones()
+            # CLAVE: Cargar ubicaciones cuando se selecciona "Retirar"
+            cargar_ubicaciones_combo()
         elif operacion_var.get() == "depositar_a":
+            print("📤 Mostrando campos para DEPOSITAR A")
             legajo_label.grid(row=4, column=0, sticky=tk.W, pady=5)
             legajo_entry.grid(row=4, column=1, sticky=tk.W, padx=(10, 0), pady=5)
     
-    def actualizar_ubicaciones():
-        banco_seleccionado = banco_var.get()
-        if banco_seleccionado:
-            codigo_banco = obtener_codigo_banco(banco_seleccionado, bancos_data)
-            if codigo_banco and codigo_banco in ubicaciones_data:
-                ubicaciones_nombres = list(ubicaciones_data[codigo_banco].values())
-                ubicacion_combo.config(values=ubicaciones_nombres)
-                ubicacion_var.set("")
-            else:
-                ubicacion_combo.config(values=[])
-                ubicacion_var.set("")
+    def on_banco_change(event):
+        """Se ejecuta cuando se cambia el banco"""
+        print(f"🏦 Banco cambiado a: {banco_var.get()}")
+        # CLAVE: Solo recargar ubicaciones si estamos en modo "retirar"
+        if operacion_var.get() == "retirar":
+            print("🔄 Recargando ubicaciones porque estamos en modo RETIRAR")
+            cargar_ubicaciones_combo()
     
-    # Radiobuttons
+    # Vincular eventos
+    banco_combo.bind("<<ComboboxSelected>>", on_banco_change)
+    
+    
     ttk.Radiobutton(radio_frame, text="Depositar", variable=operacion_var, 
                 value="depositar", command=cambiar_operacion).pack(side=tk.LEFT)
     ttk.Radiobutton(radio_frame, text="Retirar", variable=operacion_var, 
@@ -181,16 +223,7 @@ def abrir_deposito_retiro(parent, cuenta, cuentas_file, movimientos_file):
     ttk.Radiobutton(radio_frame, text="Depositar a", variable=operacion_var, 
                 value="depositar_a", command=cambiar_operacion).pack(side=tk.LEFT, padx=(10, 0))
     
-    # Banco
-    ttk.Label(main_frame, text="Banco:", font=("Arial", 10, "bold")).grid(
-        row=3, column=0, sticky=tk.W, pady=5)
-    nombres_bancos = list(bancos_data.values())
-    banco_combo = ttk.Combobox(main_frame, textvariable=banco_var, 
-                            values=nombres_bancos, state="readonly", width=18)
-    banco_combo.grid(row=3, column=1, sticky=tk.W, padx=(10, 0), pady=5)
-    banco_combo.bind("<<ComboboxSelected>>", lambda e: actualizar_ubicaciones())
     
-    # Resultado
     resultado_frame = ttk.LabelFrame(main_frame, text="Resumen de la operación", padding="10")
     resultado_frame.grid(row=5, column=0, columnspan=2, pady=(20, 10), sticky=(tk.W, tk.E))
     resultado_text = tk.Text(resultado_frame, height=8, width=50, wrap=tk.WORD)
@@ -200,7 +233,7 @@ def abrir_deposito_retiro(parent, cuenta, cuentas_file, movimientos_file):
     resultado_text.config(yscrollcommand=scrollbar.set)
     
     def procesar_operacion_integrada():
-        # Validar monto
+        
         monto_texto = monto_var.get().strip()
         if not monto_texto or not monto_texto.replace('.', '').replace(',', '').isdigit():
             messagebox.showerror("Error", "Ingrese un monto válido")
@@ -212,12 +245,12 @@ def abrir_deposito_retiro(parent, cuenta, cuentas_file, movimientos_file):
             messagebox.showerror("Error", "El monto debe ser mayor a 0")
             return
         
-        # Validar banco
+        
         if not banco_var.get():
             messagebox.showerror("Error", "Seleccione un banco")
             return
         
-        # Cargar datos actuales
+        
         cuentas = load_json(cuentas_file, [])
         movimientos = load_json(movimientos_file, {})
         idx = next((i for i, c in enumerate(cuentas) if c["usuario"] == cuenta["usuario"]), None)
@@ -226,9 +259,9 @@ def abrir_deposito_retiro(parent, cuenta, cuentas_file, movimientos_file):
             messagebox.showerror("Error", "Cuenta no encontrada")
             return
         
-        # Procesar según operación
+       
         if operacion_var.get() == "depositar":
-            # Depósito a cuenta propia
+            
             cuentas[idx]["saldo"] += monto
             movimientos.setdefault(cuenta["usuario"], []).append({
                 "tipo": "deposito",
@@ -262,13 +295,13 @@ def abrir_deposito_retiro(parent, cuenta, cuentas_file, movimientos_file):
                 messagebox.showerror("Error", "Saldo insuficiente")
                 return
             
-            # Buscar cuenta destino
+            
             idx_destino = next((i for i, c in enumerate(cuentas) if c["legajo"] == legajo_var.get()), None)
             if idx_destino is None:
                 messagebox.showerror("Error", "Legajo destino no encontrado")
                 return
             
-            # Transferir
+            
             cuentas[idx]["saldo"] -= monto
             cuentas[idx_destino]["saldo"] += monto
             fecha = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -286,11 +319,11 @@ def abrir_deposito_retiro(parent, cuenta, cuentas_file, movimientos_file):
             })
             operacion_txt = "TRANSFERENCIA"
         
-        # Guardar cambios
+       
         save_json(cuentas_file, cuentas)
         save_json(movimientos_file, movimientos)
         
-        # Mostrar resultado
+      
         resultado_text.delete(1.0, tk.END)
         resultado = f"=== {operacion_txt} PROCESADO ===\n\n"
         resultado += f"Monto: ${monto}\n"
@@ -304,11 +337,12 @@ def abrir_deposito_retiro(parent, cuenta, cuentas_file, movimientos_file):
         
         messagebox.showinfo("Éxito", f"{operacion_txt} procesado correctamente")
     
-    # Botones
+   
     button_frame = ttk.Frame(main_frame)
     button_frame.grid(row=6, column=0, columnspan=2, pady=10)
     
     ttk.Button(button_frame, text="Procesar", command=procesar_operacion_integrada).pack(side=tk.LEFT, padx=5)
     ttk.Button(button_frame, text="Cerrar", command=root.destroy).pack(side=tk.LEFT, padx=5)
     
+    # Inicializar la interfaz
     cambiar_operacion()

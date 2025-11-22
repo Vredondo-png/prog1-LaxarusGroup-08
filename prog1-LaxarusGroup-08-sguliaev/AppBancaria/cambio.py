@@ -6,7 +6,7 @@ import json
 
 def programa_intercambio(parent, usuario):
 
-    # Funcion para comprobar input
+    
     def corregir_input():
         allowed_symbols='0123456789.'
         current_str_value = entry_amount1.get()
@@ -25,11 +25,11 @@ def programa_intercambio(parent, usuario):
         new_float_value = float(current_str_value)
         var_amount1.set(value=new_float_value)
 
-    # Funcion para obtener tasa
+   
     def get_currency(moneda):
         return currency[moneda]
 
-    # Funcion para mostrar tasas
+   
     def display_tasa():
         moneda1 = var_moneda1.get()
         moneda2 = var_moneda2.get()
@@ -41,7 +41,7 @@ def programa_intercambio(parent, usuario):
             amount2 = 1 / get_currency(moneda1) * get_currency(moneda2)
         var_currency.set(f"1 {var_moneda1.get()} = {amount2} {var_moneda2.get()}")
 
-    #  Funcion para recalcular intercambio
+   
     def recalcular_intercambio():
         moneda1 = var_moneda1.get()
         moneda2 = var_moneda2.get()
@@ -54,7 +54,7 @@ def programa_intercambio(parent, usuario):
             amount2 = amount1 / get_currency(moneda1) * get_currency(moneda2)
         var_amount2.set(value=amount2)
 
-    # Funcion en caso de que entry cambiado
+   
     def on_entry_change(var, index, mode): 
         corregir_input()
         if  var_amount1.get() > get_displayed_saldo():
@@ -67,7 +67,7 @@ def programa_intercambio(parent, usuario):
             var_amount1.set(value=get_displayed_saldo())
         recalcular_intercambio()
 
-    # Funcion para recalcular intercambio
+   
     def on_combobox_changed(event):
         var_displayed_saldo.set(value=set_displayed_saldo())
         if var_moneda1.get() == var_moneda2.get() or var_moneda2.get() == '':
@@ -77,7 +77,7 @@ def programa_intercambio(parent, usuario):
             display_tasa()
             recalcular_intercambio()
 
-    # Funcion para obtener current saldo depende de moneda elegida
+    
     def get_displayed_saldo():
         if var_moneda1.get() == "ARS":
             return user['saldo']
@@ -95,11 +95,11 @@ def programa_intercambio(parent, usuario):
             tipo_saldo = "saldo_" + moneda
             return user[tipo_saldo]
 
-    # Funcion para configurar texto de currnet saldo
+   
     def set_displayed_saldo():
         return f"Saldo: {var_moneda1.get()} {str(get_displayed_saldo())}"
 
-    # Funcion para mostrar todos los saldos
+
     def mostrar_saldos():
         resultado_text.delete(1.0, tk.END)
         resultado_text.insert(1.0, "Saldos actuales:\n")
@@ -109,7 +109,7 @@ def programa_intercambio(parent, usuario):
         resultado_text.insert(5.0, f"BRL: {str(get_saldo('BRL'))}\n")
         resultado_text.insert(6.0, "-------------------------------\n")
 
-    # Funcion para ejecutar intercambio
+    
     def intercambiar():
         
         resultado_text.insert("1.0", f"{var_moneda1.get()} {var_amount1.get()} ----> {var_moneda2.get()} {var_amount2.get()}\n")
@@ -157,7 +157,7 @@ def programa_intercambio(parent, usuario):
         "BRL": 0.0040
     }
 
-    # Acceder user info
+    
     username = usuario
     file_path = Path(__file__).parent / "cuentas.json"
     contenido = open(file_path)
@@ -169,23 +169,23 @@ def programa_intercambio(parent, usuario):
     user = cuentas_lista[indx]
     contenido.close()
 
-    # Crear ventana principal
+    
     root = tk.Toplevel(parent)
     root.title("Depositar y Retirar")
     root.geometry("500x500")
     root.resizable(False, False)
 
-    # Título
+    
     title_label = tk.Label(root, text="Sistema de Intercambio de monedas", font=("Arial", 16, "bold"))
     title_label.pack(pady=10)
 
-    # Frame principal
+    
     main_frame = tk.Frame(root)
     main_frame.pack(pady=10)
 
 
 
-    # Variables
+    
     var_moneda1 = tk.StringVar()
     var_moneda2 = tk.StringVar()
     var_amount1 = tk.DoubleVar(value=0.0)
@@ -193,37 +193,37 @@ def programa_intercambio(parent, usuario):
     var_displayed_saldo = tk.StringVar()
     var_currency = tk.StringVar(value=f"1 ARS = {currency["USD"]} USD")
 
-    # Combobox Moneda №1
+    
     combobox_moneda1 = ttk.Combobox(main_frame, textvariable=var_moneda1, values=list(currency.keys()), state='readonly', width=5)
     combobox_moneda1.current(0)
     combobox_moneda1.grid(row=0, column=0, pady=0, padx=10)
     combobox_moneda1.bind("<<ComboboxSelected>>", on_combobox_changed)
 
-    # Entry Amount №1
+    
     entry_amount1 = ttk.Entry(main_frame, textvariable=var_amount1)
     entry_amount1.grid(row=0, column=1, pady=0, padx=10)
     var_amount1.trace_add("write", on_entry_change)
 
-    # Label Saldo
+    
     var_displayed_saldo.set(value=set_displayed_saldo())
     label_saldo = ttk.Label(main_frame, textvariable=var_displayed_saldo, font=("Arial", 8, "italic"))
     label_saldo.grid(row=1, column=1, padx=10, sticky='W')
 
-    # Combobox Moneda №2
+  
     combobox_moneda2 = ttk.Combobox(main_frame, textvariable=var_moneda2, values=list(currency.keys()), state='readonly', width=5)
     combobox_moneda2.current(1)
     combobox_moneda2.grid(row=2, column=0, pady=10, padx=10)
     combobox_moneda2.bind("<<ComboboxSelected>>", on_combobox_changed)
 
-    # Label Amount №2
+    
     label_amount2 = tk.Label(main_frame, textvariable=var_amount2, bg="White", width=20, anchor="w")
     label_amount2.grid(row=2, column=1, pady=10, padx=10)
 
-    # Label Currency
+   
     label_currency = tk.Label(root, textvariable=var_currency, bg="SlateGray1")
     label_currency.pack()
 
-    # Botones
+   
     button_frame = ttk.Frame(root)
     button_frame.pack(pady=10)
 
@@ -239,14 +239,14 @@ def programa_intercambio(parent, usuario):
     button_cerrar = ttk.Button(button_frame, text="Cerrar", command = lambda : root.destroy())
     button_cerrar.grid(row=0, column=3, padx=5)
 
-    # Frame para resultado
+   
     frame_resultado = tk.LabelFrame(root, text="Resumen de la operación")
     frame_resultado.pack()
 
     resultado_text = tk.Text(frame_resultado, height=10, width=50, wrap=tk.WORD)
     resultado_text.grid(row=0, column=0)
 
-    # Scrollbar para el texto
+   
     scrollbar = tk.Scrollbar(frame_resultado, orient=tk.VERTICAL, command=resultado_text.yview)
     scrollbar.grid(row=0, column=1, sticky=(tk.N, tk.S))
     resultado_text.config(yscrollcommand=scrollbar.set)
@@ -254,4 +254,3 @@ def programa_intercambio(parent, usuario):
     root.mainloop()
 
 
-#programa_intercambio()

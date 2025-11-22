@@ -11,34 +11,34 @@ def pago_servicios(cuenta, cuentas, idx, cuentas_file, movimientos, movimientos_
         with open(path, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=2, ensure_ascii=False)
     
-    # Lista de servicios
+    
     servicios = [
         ["100", "AYSA", 500],
         ["200", "Metrogas", 750],
         ["300", "Edesur", 620],
     ]
 
-    # Opciones
+   
     metodos = ["Galicia", "BBVA", "MercadoPago", "Santander"]
     empresas_celular = ["Movistar", "Claro", "Personal", "Tuenti"]
 
-    # Variables globales
+    
     servicio_actual = None
     empresa_seleccionada = None
     numero_celular = None
     numero_sube = None
 
-    # FUNCIONES GENERALES 
+    
     def limpiar_pantalla():
         for widget in root.winfo_children():
             widget.pack_forget()
 
     def verificar_saldo(monto):
-        """Verifica si hay saldo suficiente"""
+        
         return cuenta["saldo"] >= monto
 
     def descontar_saldo(monto, concepto):
-        """Descuenta el monto del saldo y registra el movimiento"""
+        
         if not verificar_saldo(monto):
             messagebox.showerror("Error", "Saldo insuficiente")
             return False
@@ -46,18 +46,18 @@ def pago_servicios(cuenta, cuentas, idx, cuentas_file, movimientos, movimientos_
         cuenta["saldo"] -= monto
         cuentas[idx]["saldo"] = cuenta["saldo"]
         
-        # Registrar movimiento
+       
         fecha = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         mov = {"tipo": "pago", "monto": monto, "fecha": fecha, "nota": concepto}
         movimientos.setdefault(cuenta["usuario"], []).append(mov)
         
-        # Guardar cambios
+        
         save_json(cuentas_file, cuentas)
         save_json(movimientos_file, movimientos)
         
         return True
 
-    # PAGOS DE SERVICIOS
+    
     def pagar_servicios():
         limpiar_pantalla()
         tk.Label(root, text="Ingrese el código de pago:", font=("Arial", 12)).pack(pady=5)
@@ -106,7 +106,7 @@ def pago_servicios(cuenta, cuentas, idx, cuentas_file, movimientos, movimientos_
                 messagebox.showinfo("Éxito", f"Pago de ${monto} realizado con éxito\nNuevo saldo: ${cuenta['saldo']}")
                 root.destroy()
 
-    # RECARGA DE CELULAR
+   
     def recargar():
         limpiar_pantalla()
         tk.Label(root, text="Seleccione la empresa:", font=("Arial", 12)).pack(pady=5)
@@ -159,7 +159,7 @@ def pago_servicios(cuenta, cuentas, idx, cuentas_file, movimientos, movimientos_
                 messagebox.showinfo("Éxito", f"Recarga de ${monto} realizada con éxito\nNuevo saldo: ${cuenta['saldo']}")
                 root.destroy()
 
-    # CARGA SUBE
+    
     def cargar_sube():
         limpiar_pantalla()
         tk.Label(root, text="Ingrese número de SUBE:", font=("Arial", 12)).pack(pady=5)
@@ -210,17 +210,17 @@ def pago_servicios(cuenta, cuentas, idx, cuentas_file, movimientos, movimientos_
         tk.Button(root, text="Cargar SUBE", width=25, command=cargar_sube).pack(pady=10)
         tk.Button(root, text="Salir", width=25, command=root.destroy).pack(pady=10)
 
-    # VENTANA PRINCIPAL 
+  
     root = tk.Tk()
     root.title("Sistema de Pagos")
     root.geometry("400x500")
 
-    # Widgets globales reutilizables
+   
     codigo_entry = tk.Entry(root, font=("Arial", 12))
     recarga_numero = tk.Entry(root, font=("Arial", 12))
     sube_numero = tk.Entry(root, font=("Arial", 12))
 
-    # Mostrar menú principal
+    
     mostrar_menu()
 
     root.mainloop()

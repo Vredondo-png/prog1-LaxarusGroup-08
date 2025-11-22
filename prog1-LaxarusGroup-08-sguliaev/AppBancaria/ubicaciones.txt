@@ -1,13 +1,13 @@
-001,U001,Palermo
-001,U002,Recoleta
-001,U003,Belgrano
-002,U001,Villa Crespo
-002,U002,Caballito
-003,U001,Microcentro
-003,U002,Once
-004,U001,Almagro
-004,U002,Balvanera
-005,U001,Retiro
-005,U002,San Nicolás
-006,U001,Centro
-006,U002,Barrio Norte
+001,Palermo
+001,Recoleta
+001,Belgrano
+002,Villa Crespo
+002,Caballito
+003,Microcentro
+003,Once
+004,Almagro
+004,Balvanera
+005,Retiro
+005,San Nicolás
+006,Centro
+006,Barrio Norte

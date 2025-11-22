@@ -5,11 +5,11 @@ import os
 import inicio
 from PIL import Image, ImageTk
 
-# BASE_DIR apunta al directorio donde están los archivos .py y los json/txt
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 CUENTAS_FILE = os.path.join(BASE_DIR, "cuentas.json")
 MOVIMIENTOS_FILE = os.path.join(BASE_DIR, "movimientos.json")
-IMAGEN_FILE = os.path.join(BASE_DIR, "foto.jpg")  # Cambiado a .jpg
+IMAGEN_FILE = os.path.join(BASE_DIR, "foto.jpg")  
 
 
 def load_json(path, default):
@@ -21,7 +21,7 @@ def load_json(path, default):
         return json.load(f)
 
 
-# Archivos por defecto (si no existen)
+
 default_cuentas = [
     {"usuario": "alice", "password": "alice123", "legajo": "100", "saldo": 10000},
     {"usuario": "bob",   "password": "bob123",   "legajo": "200", "saldo": 5000},
@@ -74,29 +74,29 @@ def guardar_datos():
     inicio.abrir_pagina_cuenta(cuenta, CUENTAS_FILE, MOVIMIENTOS_FILE, parent=ventana)
 
 
-# --- INTERFAZ LOGIN --- #
+
 ventana = tk.Tk()
 ventana.geometry("800x1000")
 ventana.resizable(False, False)
 ventana.title("Login - Grupo XML")
 
-# Cargar imagen JPG con PIL y redimensionar
+
 if os.path.exists(IMAGEN_FILE):
     try:
-        # Abrir imagen con PIL
+        
         img = Image.open(IMAGEN_FILE)
         
-        # Redimensionar (dividir por 4)
+       
         nuevo_ancho = img.width // 4
         nuevo_alto = img.height // 4
         img = img.resize((nuevo_ancho, nuevo_alto), Image.Resampling.LANCZOS)
         
-        # Convertir a PhotoImage para tkinter
+        
         photo = ImageTk.PhotoImage(img)
         
-        # Mostrar en label
+        
         label_img = tk.Label(ventana, image=photo)
-        label_img.image = photo  # Mantener referencia
+        label_img.image = photo  
         label_img.pack(pady=(20, 10))
     except Exception as e:
         print(f"Error al cargar imagen: {e}")
@@ -104,33 +104,33 @@ if os.path.exists(IMAGEN_FILE):
 else:
     tk.Label(ventana, text="[Imagen no encontrada]", font=("Arial", 10), fg="red").pack(pady=(20, 10))
 
-# Texto principal
+
 tk.Label(ventana, text="GRUPO XML", font=("Arial", 24, "bold")).pack(pady=(10, 20))
 tk.Label(ventana, text="Bienvenido al GRUPO XML.\nTrabajamos con Banco Galicia, Santander,\nBBVA, Banco Nación entre otros.",
          font=("Arial", 14)).pack(pady=(5, 30))
 
-# Usuario
+
 frame_usuario = tk.Frame(ventana)
 frame_usuario.pack(pady=10)
 tk.Label(frame_usuario, text="Usuario: ", font=("Arial", 14, "bold")).pack(side="left")
 user = tk.Entry(frame_usuario, font=("Arial", 14), width=25)
 user.pack(side="left")
 
-# Contraseña
+
 frame_contra = tk.Frame(ventana)
 frame_contra.pack(pady=10)
 tk.Label(frame_contra, text="Contraseña: ", font=("Arial", 14, "bold")).pack(side="left")
 password = tk.Entry(frame_contra, font=("Arial", 14), width=25, show="*")
 password.pack(side="left")
 
-# Legajo
+
 frame_legajo = tk.Frame(ventana)
 frame_legajo.pack(pady=10)
 tk.Label(frame_legajo, text="Legajo: ", font=("Arial", 14, "bold")).pack(side="left")
 lega = tk.Entry(frame_legajo, font=("Arial", 14), width=25)
 lega.pack(side="left")
 
-# Botón ingresar
+
 tk.Button(ventana, text="Ingresar", font=("Arial", 16, "bold"), bd=7, bg="red", command=guardar_datos).pack(pady=20)
 
 ventana.mainloop()
