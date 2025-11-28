@@ -1,6 +1,0 @@
-100,Banco Santander
-200,Banco Galicia
-300,Banco Nación
-400,Banco Macro
-500,BBVA
-600,Banco Ciudad
