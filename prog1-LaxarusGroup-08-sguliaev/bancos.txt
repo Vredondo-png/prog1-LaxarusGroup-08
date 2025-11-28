@@ -1,6 +1,0 @@
-001,Banco Santander
-002,Banco Galicia
-003,Banco Nación
-004,Banco Macro
-005,BBVA
-006,Banco Ciudad
